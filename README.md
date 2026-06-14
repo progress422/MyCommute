@@ -47,7 +47,7 @@ The project uses a **feature-based** layout. Each domain area owns its UI, hooks
 ```text
 src/
 ├── app/           # App shell: providers, router, layouts
-├── features/      # Domain features (settings, routes, favorites, …)
+├── features/      # Domain features (transport, notifications, settings)
 ├── shared/        # Cross-feature components, API, hooks, utils, types
 ├── stores/        # Zustand stores (global client state)
 └── test/          # Test setup and example tests
@@ -60,16 +60,21 @@ src/
 
 Each feature folder includes a `README.md` describing its future responsibilities.
 
+## Features
+
+The app has three main areas (placeholder UI only — business logic is left as TODOs):
+
+- **Transport** — main page for commute search and route suggestions
+- **Notifications** — commute alerts and departure reminders
+- **Settings** — default departure location and destination
+
 ## Future Roadmap
 
-Planned features (not implemented in this scaffold):
+Planned work (not implemented in this scaffold):
 
-- Configure default departure location
-- Configure default destination
-- Search public transport connections
-- Display route suggestions
-- Save favorite routes
-- Keep route history
+- Search public transport connections and display route suggestions
+- Commute alerts and departure reminders
+- Persist user settings (departure and destination defaults)
 - Replace mock API with a real transport provider
 
 ## For Vue Developers

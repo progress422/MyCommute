@@ -22,21 +22,15 @@ export function MainLayout() {
               Commute Planner
             </p>
             <p className="text-sm text-slate-600">
-              React learning scaffold — features not yet implemented
+              Plan your daily commute
             </p>
           </div>
           <nav className="flex flex-wrap gap-2" aria-label="Main navigation">
             <NavLink to="/" end className={navLinkClass}>
-              Home
+              Transport
             </NavLink>
-            <NavLink to="/routes" className={navLinkClass}>
-              Routes
-            </NavLink>
-            <NavLink to="/favorites" className={navLinkClass}>
-              Favorites
-            </NavLink>
-            <NavLink to="/history" className={navLinkClass}>
-              History
+            <NavLink to="/notifications" className={navLinkClass}>
+              Notifications
             </NavLink>
             <NavLink to="/settings" className={navLinkClass}>
               Settings

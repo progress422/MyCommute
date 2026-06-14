@@ -6,7 +6,7 @@ User preferences such as default departure location and destination.
 
 - Settings form UI and validation (`schemas/`, `components/`)
 - Load and save preferences (`hooks/`, `api/`)
-- Optional integration with station search for autocomplete
+- Optional station autocomplete via shared `searchStations` API
 
 ## Not implemented in scaffold
 
