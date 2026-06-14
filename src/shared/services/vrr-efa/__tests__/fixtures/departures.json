@@ -1,0 +1,26 @@
+{
+  "departureList": [
+    {
+      "stopName": "Düsseldorf Hbf",
+      "stopID": "20018235",
+      "dateTime": { "year": 2026, "month": 6, "day": 14, "hour": 8, "minute": 5 },
+      "realDateTime": { "year": 2026, "month": 6, "day": 14, "hour": 8, "minute": 7 },
+      "platform": "6",
+      "rtPlatform": "6",
+      "servingLine": {
+        "lineNumber": "RE1",
+        "directionTo": "Dortmund Hbf"
+      }
+    },
+    {
+      "stopName": "Düsseldorf Hbf",
+      "stopID": "20018235",
+      "dateTime": { "year": 2026, "month": 6, "day": 14, "hour": 8, "minute": 12 },
+      "platform": "7",
+      "servingLine": {
+        "lineNumber": "S1",
+        "directionTo": "Solingen Hbf"
+      }
+    }
+  ]
+}

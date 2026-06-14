@@ -1,0 +1,14 @@
+{
+  "stopFinder": {
+    "points": {
+      "point": [
+        {
+          "name": "Hbf",
+          "id": "20018235",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf" }
+        }
+      ]
+    }
+  }
+}

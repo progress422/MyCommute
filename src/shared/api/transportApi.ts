@@ -1,34 +1,26 @@
 import type {
-  ConnectionSearchParams,
-  ConnectionSearchResult,
+  CommuteSearchParams,
+  CommuteWithTimetables,
   Station,
   StationSearchParams,
 } from '../types';
+import { vrrTransportService } from '../services/vrr-efa/VrrTransportService';
 
 /**
  * Transport API boundary.
  *
- * These functions will initially return mock data for local development,
- * then be replaced with calls to a real public transport provider.
- *
- * Feature-specific query hooks (e.g. `useSearchConnections`) should wrap
+ * Feature-specific query hooks (e.g. `useCommuteSearch`) should wrap
  * these functions and live in each feature's `hooks/` folder.
  */
-
-export async function searchConnections(
-  params: ConnectionSearchParams,
-): Promise<ConnectionSearchResult[]> {
-  void params;
-  // TODO: Return mock connection results during early development.
-  // TODO: Replace with real transport API integration.
-  throw new Error('Not implemented');
-}
 
 export async function searchStations(
   params: StationSearchParams,
 ): Promise<Station[]> {
-  void params;
-  // TODO: Return mock station list during early development.
-  // TODO: Replace with real station search endpoint.
-  throw new Error('Not implemented');
+  return vrrTransportService.searchStations(params);
+}
+
+export async function getCommuteWithTimetables(
+  params: CommuteSearchParams,
+): Promise<CommuteWithTimetables> {
+  return vrrTransportService.getCommuteWithTimetables(params);
 }
