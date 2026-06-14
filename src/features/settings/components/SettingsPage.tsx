@@ -1,6 +1,7 @@
 import { ExampleSettingsForm } from '../../../shared/components/ExampleSettingsForm';
 import { PageContainer } from '../../../shared/components/PageContainer';
 import { PageHeader } from '../../../shared/components/PageHeader';
+import { UserSelector } from './UserSelector';
 
 /**
  * User settings placeholder.
@@ -17,6 +18,10 @@ export function SettingsPage() {
         description="Configure default departure location and destination."
       />
       <div className="space-y-6">
+        <section className="rounded-lg border border-slate-200 bg-white p-6">
+          <UserSelector />
+        </section>
+
         <section className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-slate-600">
           <p>
             User preferences will be managed here. The example form below
