@@ -1,0 +1,62 @@
+{
+  "journeys": [
+    {
+      "interchanges": 1,
+      "duration": 52,
+      "legs": [
+        {
+          "duration": 18,
+          "transportation": {
+            "product": { "name": "RE", "num": "1" },
+            "destination": { "name": "Dortmund Hbf" },
+            "line": "1"
+          },
+          "origin": {
+            "location": { "id": "20018235", "name": "Hbf", "parent": { "name": "Düsseldorf" } },
+            "dateTime": { "year": 2026, "month": 6, "day": 14, "hour": 8, "minute": 5 }
+          },
+          "destination": {
+            "location": { "id": "20001012", "name": "Hbf", "parent": { "name": "Duisburg" } },
+            "dateTime": { "year": 2026, "month": 6, "day": 14, "hour": 8, "minute": 23 }
+          },
+          "stopSequence": [
+            { "location": { "id": "20018235", "name": "Hbf", "parent": { "name": "Düsseldorf" } } },
+            { "location": { "id": "20001012", "name": "Hbf", "parent": { "name": "Duisburg" } } }
+          ]
+        },
+        {
+          "duration": 5,
+          "pathDescription": "footpath",
+          "origin": {
+            "location": { "id": "20001012", "name": "Hbf", "parent": { "name": "Duisburg" } },
+            "dateTime": { "year": 2026, "month": 6, "day": 14, "hour": 8, "minute": 23 }
+          },
+          "destination": {
+            "location": { "id": "20001012", "name": "Hbf", "parent": { "name": "Duisburg" } },
+            "dateTime": { "year": 2026, "month": 6, "day": 14, "hour": 8, "minute": 28 }
+          }
+        },
+        {
+          "duration": 24,
+          "transportation": {
+            "product": { "name": "S", "num": "1" },
+            "destination": { "name": "Essen Hbf" },
+            "line": "1"
+          },
+          "origin": {
+            "location": { "id": "20001012", "name": "Hbf", "parent": { "name": "Duisburg" } },
+            "dateTime": { "year": 2026, "month": 6, "day": 14, "hour": 8, "minute": 28 }
+          },
+          "destination": {
+            "location": { "id": "20002011", "name": "Hbf", "parent": { "name": "Essen" } },
+            "dateTime": { "year": 2026, "month": 6, "day": 14, "hour": 8, "minute": 52 }
+          },
+          "stopSequence": [
+            { "location": { "id": "20001012", "name": "Hbf", "parent": { "name": "Duisburg" } } },
+            { "location": { "id": "20002011", "name": "Hbf", "parent": { "name": "Essen" } } }
+          ]
+        }
+      ]
+    }
+  ]
+}
