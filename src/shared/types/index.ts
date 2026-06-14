@@ -25,20 +25,6 @@ export interface ConnectionSearchResult {
   durationMinutes: number;
 }
 
-export interface FavoriteRoute {
-  id: string;
-  label: string;
-  from: string;
-  to: string;
-}
-
-export interface RouteHistoryEntry {
-  id: string;
-  searchedAt: string;
-  from: string;
-  to: string;
-}
-
 export interface UserSettings {
   departureLocation: string;
   destination: string;

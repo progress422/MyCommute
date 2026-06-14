@@ -7,7 +7,7 @@ import { PageHeader } from '../../../shared/components/PageHeader';
  *
  * TODO: Move form into `features/settings/components/`.
  * TODO: Load and save settings (localStorage, API, or Zustand + persist).
- * TODO: Integrate station autocomplete via `features/stations/`.
+ * TODO: Integrate station autocomplete via `searchStations` in shared API.
  */
 export function SettingsPage() {
   return (
