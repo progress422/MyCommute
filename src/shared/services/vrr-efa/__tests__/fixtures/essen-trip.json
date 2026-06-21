@@ -1,0 +1,114 @@
+{
+  "journeys": [
+    {
+      "interchanges": 0,
+      "legs": [
+        {
+          "duration": 168,
+          "isRealtimeControlled": true,
+          "origin": {
+            "id": "de:05113:9530:1:1",
+            "name": "Essen Rüttenscheider Stern",
+            "disassembledName": "Gleis 1a",
+            "parent": {
+              "id": "de:05113:9530",
+              "name": "Essen Rüttenscheider Stern",
+              "disassembledName": "Rüttenscheider Stern",
+              "parent": { "name": "Essen" },
+              "properties": { "stopId": "20009530" }
+            },
+            "departureTimePlanned": "2026-06-21T06:42:00Z",
+            "departureTimeEstimated": "2026-06-21T06:43:18Z",
+            "properties": {
+              "stopId": "20009530",
+              "platformName": "Gleis 1a"
+            }
+          },
+          "destination": {
+            "id": "de:05113:9289:13:3",
+            "name": "Essen Hauptbahnhof",
+            "disassembledName": "3",
+            "parent": {
+              "id": "de:05113:9289",
+              "name": "Essen Hauptbahnhof",
+              "disassembledName": "Hauptbahnhof",
+              "parent": { "name": "Essen" },
+              "properties": { "stopId": "20009289" }
+            },
+            "arrivalTimePlanned": "2026-06-21T06:45:00Z",
+            "arrivalTimeEstimated": "2026-06-21T06:46:06Z"
+          },
+          "transportation": {
+            "disassembledName": "U11",
+            "number": "U11",
+            "product": { "class": 2, "name": "U-Bahn" },
+            "destination": { "name": "Gelsenkirchen Buerer Str." }
+          },
+          "infos": [{ "type": "infrastructure" }]
+        }
+      ]
+    },
+    {
+      "interchanges": 0,
+      "legs": [
+        {
+          "duration": 444,
+          "origin": {
+            "name": "Essen Rüttenscheider Stern",
+            "parent": {
+              "disassembledName": "Rüttenscheider Stern",
+              "parent": { "name": "Essen" },
+              "properties": { "stopId": "20009530" }
+            },
+            "departureTimePlanned": "2026-06-21T06:51:00Z",
+            "departureTimeEstimated": "2026-06-21T06:52:36Z",
+            "properties": {
+              "stopId": "20009530",
+              "platform": "2"
+            }
+          },
+          "destination": {
+            "name": "Essen Hauptbahnhof",
+            "parent": {
+              "disassembledName": "Hauptbahnhof",
+              "parent": { "name": "Essen" },
+              "properties": { "stopId": "20009289" }
+            },
+            "arrivalTimePlanned": "2026-06-21T07:00:00Z",
+            "arrivalTimeEstimated": "2026-06-21T07:00:00Z"
+          },
+          "transportation": {
+            "disassembledName": "106",
+            "product": { "class": 4, "name": "Straßenbahn" },
+            "destination": { "name": "Essen Altenessen Bf" }
+          }
+        }
+      ]
+    },
+    {
+      "interchanges": 0,
+      "legs": [
+        {
+          "duration": 1369,
+          "origin": {
+            "name": "Essen, Rüttenscheider Stern",
+            "disassembledName": "Rüttenscheider Stern",
+            "parent": { "name": "Essen" },
+            "properties": { "stopId": "20009530" },
+            "departureTimePlanned": "2026-06-21T06:49:00Z"
+          },
+          "destination": {
+            "name": "Essen, Hauptbahnhof",
+            "disassembledName": "Hauptbahnhof",
+            "parent": { "name": "Essen" },
+            "properties": { "stopId": "20009289" },
+            "arrivalTimePlanned": "2026-06-21T07:11:49Z"
+          },
+          "transportation": {
+            "product": { "class": 100, "name": "footpath" }
+          }
+        }
+      ]
+    }
+  ]
+}

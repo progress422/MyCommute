@@ -1,0 +1,20 @@
+{
+  "locations": [
+    {
+      "id": "de:05113:9530",
+      "name": "Essen, Rüttenscheider Stern",
+      "disassembledName": "Rüttenscheider Stern",
+      "type": "stop",
+      "isBest": true,
+      "parent": { "name": "Essen" },
+      "properties": { "stopId": "20009530" }
+    },
+    {
+      "id": "streetID:example",
+      "name": "Essen, Rüttenscheider Stern",
+      "type": "street",
+      "isBest": false,
+      "parent": { "name": "Essen" }
+    }
+  ]
+}
