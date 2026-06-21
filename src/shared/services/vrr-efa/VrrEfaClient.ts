@@ -4,12 +4,13 @@ import type {
   EfaTripResponse,
 } from './efaTypes';
 import { VrrEfaError } from './efaTypes';
+import { buildTripRoutingParams } from './tripRequestParams';
 
 const DEFAULT_BASE_URL = '/api/vrr';
 
 export interface TripRequestParams {
-  from: string;
-  to: string;
+  fromStopId: string;
+  toStopId: string;
   departureTime?: Date;
   results?: number;
 }
@@ -29,7 +30,7 @@ export class VrrEfaClient {
 
   async stopFinder(query: string): Promise<EfaStopFinderResponse> {
     return this.request<EfaStopFinderResponse>('XML_STOPFINDER_REQUEST', {
-      type_sf: 'stop',
+      type_sf: 'any',
       name_sf: query,
     });
   }
@@ -38,10 +39,10 @@ export class VrrEfaClient {
     const departure = params.departureTime ?? new Date();
 
     return this.request<EfaTripResponse>('XML_TRIP_REQUEST2', {
-      type_origin: 'stop',
-      name_origin: params.from,
-      type_destination: 'stop',
-      name_destination: params.to,
+      type_origin: 'any',
+      name_origin: params.fromStopId,
+      type_destination: 'any',
+      name_destination: params.toStopId,
       ptOptionsActive: '1',
       itOptionsActive: '1',
       calcNumberOfTrips: String(params.results ?? 3),
@@ -51,6 +52,7 @@ export class VrrEfaClient {
       itdDateYear: String(departure.getFullYear()),
       itdTimeHour: String(departure.getHours()),
       itdTimeMinute: String(departure.getMinutes()),
+      ...buildTripRoutingParams(),
     });
   }
 
@@ -77,7 +79,7 @@ export class VrrEfaClient {
       outputFormat: 'rapidJSON',
       stateless: '1',
       locationServerActive: '1',
-      language: 'de',
+      language: 'en',
       useRealtime: '1',
       coordOutputFormat: 'WGS84[dd.ddddd]',
     };

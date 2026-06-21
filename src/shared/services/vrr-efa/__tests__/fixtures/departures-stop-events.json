@@ -1,0 +1,45 @@
+{
+  "locations": [
+    {
+      "id": "de:05113:9530",
+      "name": "Essen, Rüttenscheider Stern",
+      "disassembledName": "Rüttenscheider Stern",
+      "type": "stop",
+      "parent": { "name": "Essen" },
+      "properties": { "stopId": "20009530" }
+    }
+  ],
+  "stopEvents": [
+    {
+      "departureTimePlanned": "2026-06-21T08:59:00Z",
+      "departureTimeEstimated": "2026-06-21T09:00:54Z",
+      "location": {
+        "properties": {
+          "platformName": "2",
+          "platform": "2"
+        }
+      },
+      "transportation": {
+        "disassembledName": "106",
+        "number": "106",
+        "product": { "class": 4, "name": "Straßenbahn" },
+        "destination": { "name": "Essen Altenessen Bf" }
+      }
+    },
+    {
+      "departureTimePlanned": "2026-06-21T09:02:00Z",
+      "location": {
+        "properties": {
+          "platformName": "Gleis 1b",
+          "platform": "1b"
+        }
+      },
+      "transportation": {
+        "disassembledName": "U11",
+        "number": "U11",
+        "product": { "class": 2, "name": "U-Bahn" },
+        "destination": { "name": "Gelsenkirchen Buerer Str." }
+      }
+    }
+  ]
+}

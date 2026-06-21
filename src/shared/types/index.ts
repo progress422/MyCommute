@@ -1,5 +1,6 @@
 export type {
   CommuteLeg,
+  CommuteOption,
   CommuteRoute,
   CommuteSearchParams,
   CommuteWithTimetables,
@@ -10,6 +11,8 @@ export type {
   RouteHistoryEntry,
   Station,
   StationSearchParams,
-  StopTimetable,
+  TripSegmentOptions,
+  TransportProductClass,
+  TripLineBadge,
   UserSettings,
 } from './transport';
