@@ -12,6 +12,7 @@ import {
   parseStopFinderResponse,
   resolveBestStopOrThrow,
 } from './parsers/stopFinder';
+import type { EfaStopFinderResponse } from './efaTypes';
 import {
   boardingDepartureTime,
   dedupeTripOptions,
@@ -34,6 +35,27 @@ export class VrrTransportService {
   async searchStations(params: StationSearchParams): Promise<Station[]> {
     const response = await this.client.stopFinder(params.query.trim());
     return parseStopFinderResponse(response);
+  }
+
+  async searchStationsByCoords(lat: number, lon: number): Promise<Station[]> {
+    const response = await this.client.stopFinderByCoords(lat, lon, 15);
+    return parseStopFinderResponse(response);
+  }
+
+  async searchStationsByAddress(query: string, limit = 3): Promise<Station[]> {
+    const normalizedQuery = query.trim();
+    if (!normalizedQuery) {
+      return [];
+    }
+
+    const firstResponse = await this.client.stopFinder(normalizedQuery);
+    const anchor = this.extractFirstAnchorId(firstResponse) ?? normalizedQuery;
+    const secondResponse = await this.client.stopFinder(anchor);
+    const parsed = parseStopFinderResponse(secondResponse);
+    const nonCoord = parsed.filter((station) => !station.id.startsWith('coord:'));
+    const preferred = nonCoord.length > 0 ? nonCoord : parsed;
+
+    return preferred.slice(0, limit);
   }
 
   private async resolveStop(query: string): Promise<Station> {
@@ -161,6 +183,45 @@ export class VrrTransportService {
     });
 
     return parseTripOptionsLenient(response);
+  }
+
+  private extractFirstAnchorId(response: EfaStopFinderResponse): string | undefined {
+    const locations = response.locations
+      ? Array.isArray(response.locations)
+        ? response.locations
+        : [response.locations]
+      : [];
+
+    for (const location of locations) {
+      if (location.id != null && location.id !== '') {
+        return String(location.id);
+      }
+    }
+
+    const points = response.stopFinder?.points;
+    if (!points || typeof points !== 'object') {
+      return undefined;
+    }
+
+    const pointContainer = points as Record<string, unknown>;
+    const pointValues = 'point' in pointContainer
+      ? pointContainer.point
+      : points;
+    const pointArray = Array.isArray(pointValues) ? pointValues : [pointValues];
+
+    for (const point of pointArray) {
+      if (
+        point &&
+        typeof point === 'object' &&
+        'id' in point &&
+        (point as { id?: unknown }).id != null &&
+        (point as { id?: unknown }).id !== ''
+      ) {
+        return String((point as { id?: unknown }).id);
+      }
+    }
+
+    return undefined;
   }
 }
 

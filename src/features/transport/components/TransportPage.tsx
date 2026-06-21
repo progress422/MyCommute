@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { PageContainer } from '../../../shared/components/PageContainer';
 import { PageHeader } from '../../../shared/components/PageHeader';
+import { useUserStore } from '../../../stores/useUserStore';
 import { useCommuteSearch } from '../hooks/useCommuteSearch';
 import {
   DEFAULT_COMMUTE_FROM,
@@ -17,18 +18,32 @@ function toDateTimeLocalValue(date: Date): string {
 }
 
 export function TransportPage() {
-  const [from, setFrom] = useState(DEFAULT_COMMUTE_FROM);
+  const { getSelectedUser } = useUserStore();
+  const selectedUser = getSelectedUser();
+
+  const [from, setFrom] = useState(
+    selectedUser?.preferredStation?.name ?? DEFAULT_COMMUTE_FROM,
+  );
   const [to, setTo] = useState(DEFAULT_COMMUTE_TO);
   const [departureTime, setDepartureTime] = useState(
     toDateTimeLocalValue(new Date()),
   );
 
+  const preferredStationLabel = selectedUser?.preferredStationLabel;
+
+  useEffect(() => {
+    if (selectedUser?.preferredStation?.name) {
+      setFrom(selectedUser.preferredStation.name);
+    }
+  }, [selectedUser?.preferredStation?.name]);
+
   const commuteSearch = useCommuteSearch();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     commuteSearch.mutate({
-      from,
+      from: from.trim(),
       to,
       departureTime: new Date(departureTime).toISOString(),
     });
@@ -97,6 +112,13 @@ export function TransportPage() {
           {commuteSearch.error instanceof Error
             ? commuteSearch.error.message
             : 'Failed to fetch commute data.'}
+        </section>
+      )}
+
+      {preferredStationLabel && (
+        <section className="mb-6 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-800">
+          <div className="font-semibold text-slate-900">Saved stop</div>
+          <div>{preferredStationLabel}</div>
         </section>
       )}
 

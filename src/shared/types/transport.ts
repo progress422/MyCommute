@@ -1,6 +1,7 @@
 export interface Station {
   id: string;
   name: string;
+  coord?: [number, number]; // [latitude, longitude]
 }
 
 export interface StationSearchParams {

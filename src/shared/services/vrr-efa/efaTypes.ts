@@ -87,6 +87,7 @@ export interface EfaStopFinderPoint {
   id?: string | number;
   type?: string;
   parent?: { name?: string };
+  coord?: [number, number]; // [latitude, longitude]
 }
 
 export interface EfaStopFinderLocation {
@@ -95,6 +96,22 @@ export interface EfaStopFinderLocation {
   disassembledName?: string;
   type?: string;
   isBest?: boolean;
+  coord?: [number, number] | { x?: number; y?: number };
+  parent?: { name?: string };
+  properties?: {
+    stopId?: string | number;
+  };
+  assignedStops?:
+    | EfaStopFinderAssignedStop
+    | EfaStopFinderAssignedStop[]
+    | { assignedStop?: EfaStopFinderAssignedStop | EfaStopFinderAssignedStop[] };
+}
+
+export interface EfaStopFinderAssignedStop {
+  id?: string;
+  name?: string;
+  disassembledName?: string;
+  coord?: [number, number] | { x?: number; y?: number };
   parent?: { name?: string };
   properties?: {
     stopId?: string | number;
