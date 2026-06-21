@@ -22,8 +22,12 @@ export function SegmentTripOptionsBoard({ segment }: SegmentTripOptionsBoardProp
         <p className="text-sm text-slate-500">No connections found.</p>
       ) : (
         <div className="space-y-3">
-          {segment.options.map((option) => (
-            <TripOptionCard key={option.id} option={option} interactive={false} />
+          {segment.options.map((option, index) => (
+            <TripOptionCard
+              key={`${option.id}-${option.boardingDepartureTime}-${option.arrivalTime}-${index}`}
+              option={option}
+              interactive={false}
+            />
           ))}
         </div>
       )}

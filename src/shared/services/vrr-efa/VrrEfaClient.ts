@@ -35,6 +35,29 @@ export class VrrEfaClient {
     });
   }
 
+  async stopFinderByCoords(lat: number, lon: number, limit = 15): Promise<EfaStopFinderResponse> {
+    console.log(`VrrEfaClient.stopFinderByCoords: lat=${lat}, lon=${lon}, limit=${limit}`);
+    return this.request<EfaStopFinderResponse>('XML_STOPFINDER_REQUEST', {
+      convertAddressesITKernel2LocationServer: '1',
+      convertCoord2LocationServer: '1',
+      convertCrossingsITKernel2LocationServer: '1',
+      convertPOIsITKernel2LocationServer: '1',
+      convertStopsPTKernel2LocationServer: '1',
+      coordOutputFormat: 'WGS84[dd.ddddd]',
+      doNotSearchForStops_sf: '1',
+      locationInfoActive: '1',
+      locationServerActive: '1',
+      name_sf: `${lon}:${lat}:WGS84[dd.ddddd]`,
+      outputFormat: 'rapidJSON',
+      serverInfo: '1',
+      type_sf: 'coord',
+      version: '11.0.6.72',
+      vrrStopFinderMacro: '1',
+      limit: String(limit),
+      language: 'en',
+    });
+  }
+
   async tripRequest(params: TripRequestParams): Promise<EfaTripResponse> {
     const departure = params.departureTime ?? new Date();
 
@@ -106,6 +129,8 @@ export class VrrEfaClient {
       url.searchParams.set(key, value);
     }
 
+    console.log(`VrrEfaClient.request: ${endpoint} with URL:`, url.toString());
+
     const response = await fetch(url.toString(), {
       headers: {
         Accept: 'application/json',
@@ -127,6 +152,8 @@ export class VrrEfaClient {
     } catch {
       throw new VrrEfaError('VRR EFA returned invalid JSON');
     }
+
+    console.log(`VrrEfaClient.request: ${endpoint} response:`, data);
 
     const errorResponse = data as { error?: { code?: string; text?: string } };
     if (errorResponse.error?.text) {
