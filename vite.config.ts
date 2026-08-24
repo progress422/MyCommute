@@ -6,6 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    host: true,
+    allowedHosts: ['.cursorvm.com'],
     proxy: {
       '/api/vrr': {
         target: 'https://openservice-test.vrr.de/openservice',
