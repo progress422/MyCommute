@@ -2,16 +2,12 @@
 
 Main commute view — connection search and route suggestion display.
 
-## Planned responsibilities
-
-- Commute overview and search form UI (`components/`)
-- TanStack Query hooks wrapping `searchConnections` (`hooks/`, `api/`)
-- Types and Zod schemas for search params and results
-
 ## Implemented
 
-- `useCommuteSearch` hook wrapping `getCommuteWithTimetables` from shared API
-- `TransportPage` search form with route legs and per-stop departure boards
+- Auto-loads commute connections on open using from/to saved in Settings
+- Re-fetches when departure time changes or destinations are swapped
+- `useCommuteSearch` query hook wrapping `getCommuteWithTimetables`
+- Trip tiles show time until departure and total duration
 
 ## Shared service
 

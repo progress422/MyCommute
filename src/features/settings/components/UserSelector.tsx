@@ -33,7 +33,7 @@ export function UserSelector() {
         setSelectedStationId(topStations[0].id);
         setStationLabel(topStations[0].name);
       }
-    } catch (err) {
+    } catch {
       setStations([]);
       setSelectedStationId(null);
     } finally {

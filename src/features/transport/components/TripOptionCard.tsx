@@ -1,6 +1,11 @@
 import type { CommuteOption } from '../../../shared/types';
-import { LineBadge } from './LineBadge';
+import { useTickingNow } from '../hooks/useTickingNow';
+import {
+  formatTimeUntilDeparture,
+  getEffectiveDepartureTime,
+} from '../utils/timeUntilDeparture';
 import { formatJourneyTimeRange, formatTripTime } from '../utils/tripDisplay';
+import { LineBadge } from './LineBadge';
 
 interface TripOptionCardProps {
   option: CommuteOption;
@@ -16,6 +21,11 @@ export function TripOptionCard({
   onSelect,
   interactive = true,
 }: TripOptionCardProps) {
+  const now = useTickingNow();
+  const timeUntilDeparture = formatTimeUntilDeparture(
+    getEffectiveDepartureTime(option),
+    now,
+  );
   const hasBoardingDelay =
     option.boardingDepartureTimeEstimated != null &&
     option.boardingDepartureTimeEstimated !== option.boardingDepartureTime;
@@ -30,7 +40,7 @@ export function TripOptionCard({
   ].join(' ');
 
   const content = (
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-stretch justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-base font-semibold text-white">
@@ -102,15 +112,20 @@ export function TripOptionCard({
           </div>
         </div>
 
-        <div className="shrink-0 text-right">
-          <p className="text-sm font-medium text-slate-300">
-            {option.durationMinutes} min
+        <div className="flex shrink-0 flex-col items-end justify-between text-right">
+          <p className="text-sm font-semibold text-white">
+            {timeUntilDeparture}
           </p>
-          {option.transfers > 0 && (
-            <p className="text-xs text-slate-500">
-              {option.transfers} transfer{option.transfers === 1 ? '' : 's'}
+          <div>
+            {option.transfers > 0 && (
+              <p className="text-xs text-slate-500">
+                {option.transfers} transfer{option.transfers === 1 ? '' : 's'}
+              </p>
+            )}
+            <p className="text-xs text-slate-400">
+              {option.durationMinutes} min
             </p>
-          )}
+          </div>
         </div>
       </div>
   );
