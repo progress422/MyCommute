@@ -1,6 +1,5 @@
 import { useState, type ChangeEvent } from 'react';
 import { PageContainer } from '../../../shared/components/PageContainer';
-import { PageHeader } from '../../../shared/components/PageHeader';
 import {
   useCommuteSettingsHydrated,
   useCommuteSettingsStore,
@@ -66,11 +65,6 @@ export function TransportPage() {
 
   return (
     <PageContainer>
-      <PageHeader
-        title="Transport"
-        description="Search and compare public transport connections for your commute."
-      />
-
       <section className="mb-6 space-y-4 rounded-lg border border-slate-200 bg-white p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <label className="block text-sm font-medium text-slate-700">
