@@ -1,12 +1,10 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { PageContainer } from '../../../shared/components/PageContainer';
-import { PageHeader } from '../../../shared/components/PageHeader';
-import { useUserStore } from '../../../stores/useUserStore';
-import { useCommuteSearch } from '../hooks/useCommuteSearch';
 import {
-  DEFAULT_COMMUTE_FROM,
-  DEFAULT_COMMUTE_TO,
-} from '../constants';
+  useCommuteSettingsHydrated,
+  useCommuteSettingsStore,
+} from '../../../stores/useCommuteSettingsStore';
+import { useCommuteSearch } from '../hooks/useCommuteSearch';
 import { formatDepartureLabel } from '../utils/departureLabel';
 import { SegmentTripOptionsBoard } from './SegmentTripOptionsBoard';
 import { TripOptionCard } from './TripOptionCard';
@@ -17,36 +15,49 @@ function toDateTimeLocalValue(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-export function TransportPage() {
-  const { getSelectedUser } = useUserStore();
-  const selectedUser = getSelectedUser();
+function toIsoDepartureTime(dateTimeLocal: string): string | undefined {
+  if (!dateTimeLocal) {
+    return undefined;
+  }
 
-  const [from, setFrom] = useState(
-    selectedUser?.preferredStation?.name ?? DEFAULT_COMMUTE_FROM,
+  const parsed = new Date(dateTimeLocal);
+  if (Number.isNaN(parsed.getTime())) {
+    return undefined;
+  }
+
+  return parsed.toISOString();
+}
+
+export function TransportPage() {
+  const from = useCommuteSettingsStore((state) => state.from);
+  const to = useCommuteSettingsStore((state) => state.to);
+  const swapDestinations = useCommuteSettingsStore(
+    (state) => state.swapDestinations,
   );
-  const [to, setTo] = useState(DEFAULT_COMMUTE_TO);
-  const [departureTime, setDepartureTime] = useState(
+
+  const [departureTime, setDepartureTime] = useState(() =>
     toDateTimeLocalValue(new Date()),
   );
+  const hasHydrated = useCommuteSettingsHydrated();
 
-  const preferredStationLabel = selectedUser?.preferredStationLabel;
-
-  useEffect(() => {
-    if (selectedUser?.preferredStation?.name) {
-      setFrom(selectedUser.preferredStation.name);
-    }
-  }, [selectedUser?.preferredStation?.name]);
-
-  const commuteSearch = useCommuteSearch();
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    commuteSearch.mutate({
-      from: from.trim(),
+  const departureTimeIso = toIsoDepartureTime(departureTime);
+  const commuteSearch = useCommuteSearch(
+    {
+      from,
       to,
-      departureTime: new Date(departureTime).toISOString(),
-    });
+      departureTime: departureTimeIso,
+    },
+    { enabled: hasHydrated && Boolean(departureTimeIso) },
+  );
+
+  const handleDepartureTimeChange = (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setDepartureTime(event.currentTarget.value);
+  };
+
+  const handleSwapDestinations = () => {
+    swapDestinations();
   };
 
   const result = commuteSearch.data;
@@ -54,58 +65,33 @@ export function TransportPage() {
 
   return (
     <PageContainer>
-      <PageHeader
-        title="Transport"
-        description="Search and compare public transport connections for your commute."
-      />
+      <section className="mb-6 space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <label className="block text-sm font-medium text-slate-700">
+            Departure time
+            <input
+              type="datetime-local"
+              value={departureTime}
+              onChange={handleDepartureTimeChange}
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm sm:max-w-xs"
+            />
+          </label>
 
-      <form
-        onSubmit={handleSubmit}
-        className="mb-6 space-y-4 rounded-lg border border-slate-200 bg-white p-6"
-      >
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="block text-sm font-medium text-slate-700">
-            From
-            <input
-              type="text"
-              value={from}
-              onChange={(event) => setFrom(event.target.value)}
-              placeholder="e.g. Rüttenscheider Stern, Essen"
-              required
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            />
-          </label>
-          <label className="block text-sm font-medium text-slate-700">
-            To
-            <input
-              type="text"
-              value={to}
-              onChange={(event) => setTo(event.target.value)}
-              placeholder="e.g. Essen Hbf"
-              required
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            />
-          </label>
+          <button
+            type="button"
+            onClick={handleSwapDestinations}
+            className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+          >
+            Switch destinations
+          </button>
         </div>
 
-        <label className="block text-sm font-medium text-slate-700">
-          Departure time
-          <input
-            type="datetime-local"
-            value={departureTime}
-            onChange={(event) => setDepartureTime(event.target.value)}
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm sm:max-w-xs"
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={commuteSearch.isPending}
-          className="rounded-md bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50"
-        >
-          {commuteSearch.isPending ? 'Searching…' : 'Search commute'}
-        </button>
-      </form>
+        <p className="text-sm text-slate-600" data-testid="commute-route">
+          <span className="font-medium text-slate-800">{from}</span>
+          <span className="mx-2 text-slate-400">→</span>
+          <span className="font-medium text-slate-800">{to}</span>
+        </p>
+      </section>
 
       {commuteSearch.isError && (
         <section className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
@@ -115,19 +101,21 @@ export function TransportPage() {
         </section>
       )}
 
-      {preferredStationLabel && (
-        <section className="mb-6 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-800">
-          <div className="font-semibold text-slate-900">Saved stop</div>
-          <div>{preferredStationLabel}</div>
+      {commuteSearch.isLoading && (
+        <section className="mb-6 rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">
+          Searching…
         </section>
       )}
 
       {result && trip && (
         <div className="space-y-6">
+          {commuteSearch.isFetching && !commuteSearch.isLoading && (
+            <p className="text-xs text-slate-500">Updating connections…</p>
+          )}
           <section className="space-y-4 rounded-2xl bg-slate-950 p-4 sm:p-6">
             <TripOverviewHeader
-              from={result.from}
-              to={result.to}
+              from={from}
+              to={to}
               departureLabel={formatDepartureLabel(result.departureTime)}
             />
             <TripOptionCard option={trip} interactive={false} />
