@@ -71,18 +71,27 @@ describe('TransportPage', () => {
     });
 
     fireEvent.change(screen.getByLabelText('Departure time'), {
-      target: { value: '2026-08-24T15:30' },
+      target: { value: '15:30' },
     });
 
     await waitFor(() => {
       expect(getCommute).toHaveBeenCalledTimes(2);
     });
 
+    const now = new Date();
+    const expectedDepartureTime = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      15,
+      30,
+    );
+
     expect(getCommute).toHaveBeenLastCalledWith(
       expect.objectContaining({
         from: DEFAULT_COMMUTE_FROM,
         to: DEFAULT_COMMUTE_TO,
-        departureTime: new Date('2026-08-24T15:30').toISOString(),
+        departureTime: expectedDepartureTime.toISOString(),
       }),
     );
   });
@@ -105,9 +114,6 @@ describe('TransportPage', () => {
         from: DEFAULT_COMMUTE_TO,
         to: DEFAULT_COMMUTE_FROM,
       }),
-    );
-    expect(screen.getByTestId('commute-route')).toHaveTextContent(
-      `${DEFAULT_COMMUTE_TO}→${DEFAULT_COMMUTE_FROM}`,
     );
   });
 });

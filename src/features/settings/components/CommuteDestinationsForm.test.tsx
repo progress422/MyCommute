@@ -17,20 +17,29 @@ describe('CommuteDestinationsForm', () => {
     });
   });
 
+  it('defaults the selects to the currently stored destinations', () => {
+    render(<CommuteDestinationsForm />);
+
+    expect(screen.getByLabelText('From')).toHaveValue(DEFAULT_COMMUTE_FROM);
+    expect(screen.getByLabelText('To')).toHaveValue(DEFAULT_COMMUTE_TO);
+  });
+
   it('saves from and to destinations to the commute settings store', async () => {
     const user = userEvent.setup();
     render(<CommuteDestinationsForm />);
 
-    const fromInput = screen.getByLabelText('From');
-    const toInput = screen.getByLabelText('To');
+    const fromSelect = screen.getByLabelText('From');
+    const toSelect = screen.getByLabelText('To');
 
-    await user.clear(fromInput);
-    await user.type(fromInput, 'Essen Hbf');
-    await user.clear(toInput);
-    await user.type(toInput, 'Düsseldorf Hbf');
+    await user.selectOptions(fromSelect, 'Rüttenscheider Stern, Essen');
+    await user.selectOptions(toSelect, 'Mülheim Hbf, Mülheim a.d. Ruhr');
     await user.click(screen.getByRole('button', { name: 'Save destinations' }));
 
-    expect(useCommuteSettingsStore.getState().from).toBe('Essen Hbf');
-    expect(useCommuteSettingsStore.getState().to).toBe('Düsseldorf Hbf');
+    expect(useCommuteSettingsStore.getState().from).toBe(
+      'Rüttenscheider Stern, Essen',
+    );
+    expect(useCommuteSettingsStore.getState().to).toBe(
+      'Mülheim Hbf, Mülheim a.d. Ruhr',
+    );
   });
 });

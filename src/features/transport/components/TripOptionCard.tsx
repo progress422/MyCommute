@@ -4,7 +4,7 @@ import {
   formatTimeUntilDeparture,
   getEffectiveDepartureTime,
 } from '../utils/timeUntilDeparture';
-import { formatJourneyTimeRange, formatTripTime } from '../utils/tripDisplay';
+import { formatTripTime } from '../utils/tripDisplay';
 import { LineBadge } from './LineBadge';
 
 interface TripOptionCardProps {
@@ -31,7 +31,7 @@ export function TripOptionCard({
     option.boardingDepartureTimeEstimated !== option.boardingDepartureTime;
 
   const className = [
-    'w-full rounded-xl border p-4 text-left transition-colors',
+    'w-full rounded-lg border p-3 text-left transition-colors',
     interactive
       ? selected
         ? 'border-emerald-500 bg-slate-800 ring-1 ring-emerald-500'
@@ -40,94 +40,39 @@ export function TripOptionCard({
   ].join(' ');
 
   const content = (
-      <div className="flex items-stretch justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-base font-semibold text-white">
-              {formatJourneyTimeRange(option)}
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-2">
+        {option.lines.map((badge) => (
+          <LineBadge key={`${option.id}-${badge.label}`} badge={badge} />
+        ))}
+
+        <div className="min-w-0 text-sm">
+          <span
+            className={
+              hasBoardingDelay
+                ? 'text-slate-500 line-through'
+                : 'font-medium text-white'
+            }
+          >
+            {formatTripTime(option.boardingDepartureTime)}
+          </span>
+          {hasBoardingDelay && option.boardingDepartureTimeEstimated && (
+            <span className="ml-1 font-medium text-amber-300">
+              {formatTripTime(option.boardingDepartureTimeEstimated)}
             </span>
-
-            {option.delayMinutes == null ? (
-              <span
-                className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400"
-                title="On time"
-                aria-label="On time"
-              >
-                ✓
-              </span>
-            ) : (
-              <span
-                className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-amber-400"
-                title={`+${option.delayMinutes} min delay`}
-                aria-label={`Delayed ${option.delayMinutes} minutes`}
-              >
-                ⏱
-              </span>
-            )}
-
-            {option.hasDisruptionInfo && (
-              <span
-                className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/20 text-orange-400"
-                title="Service information available"
-                aria-label="Service information"
-              >
-                i
-              </span>
-            )}
-          </div>
-
-          <p className="mt-2 text-sm text-slate-300">
-            <span className="text-slate-400">Departure </span>
-            <span
-              className={
-                hasBoardingDelay ? 'text-slate-500 line-through' : 'text-white'
-              }
-            >
-              {formatTripTime(option.boardingDepartureTime)}
-            </span>
-            {hasBoardingDelay && option.boardingDepartureTimeEstimated && (
-              <>
-                <span className="text-slate-500"> → </span>
-                <span className="font-medium text-amber-300">
-                  {formatTripTime(option.boardingDepartureTimeEstimated)}
-                </span>
-              </>
-            )}
-          </p>
-
-          {(option.boardingPlatform || option.direction) && (
-            <p className="mt-1 text-xs text-slate-500">
-              {option.boardingPlatform && <span>{option.boardingPlatform}</span>}
-              {option.boardingPlatform && option.direction && (
-                <span className="text-slate-600"> · </span>
-              )}
-              {option.direction && <span>→ {option.direction}</span>}
-            </p>
           )}
-
-          <div className="mt-3 flex flex-wrap gap-2">
-            {option.lines.map((badge) => (
-              <LineBadge key={`${option.id}-${badge.label}`} badge={badge} />
-            ))}
-          </div>
-        </div>
-
-        <div className="flex shrink-0 flex-col items-end justify-between text-right">
-          <p className="text-sm font-semibold text-white">
-            {timeUntilDeparture}
-          </p>
-          <div>
-            {option.transfers > 0 && (
-              <p className="text-xs text-slate-500">
-                {option.transfers} transfer{option.transfers === 1 ? '' : 's'}
-              </p>
-            )}
-            <p className="text-xs text-slate-400">
-              {option.durationMinutes} min
-            </p>
-          </div>
+          {option.boardingPlatform && (
+            <span className="ml-2 inline-flex items-center rounded-md bg-sky-500/20 px-1.5 py-0.5 text-xs font-bold tracking-wide text-sky-300">
+              {option.boardingPlatform}
+            </span>
+          )}
         </div>
       </div>
+
+      <p className="shrink-0 text-sm font-semibold text-white">
+        {timeUntilDeparture}
+      </p>
+    </div>
   );
 
   if (!interactive) {

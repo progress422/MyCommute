@@ -1,31 +1,41 @@
-import { useState, type ChangeEvent } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { PageContainer } from '../../../shared/components/PageContainer';
 import {
   useCommuteSettingsHydrated,
   useCommuteSettingsStore,
 } from '../../../stores/useCommuteSettingsStore';
 import { useCommuteSearch } from '../hooks/useCommuteSearch';
-import { formatDepartureLabel } from '../utils/departureLabel';
+import { useUiStore } from '../../../stores/useUiStore';
 import { SegmentTripOptionsBoard } from './SegmentTripOptionsBoard';
 import { TripOptionCard } from './TripOptionCard';
-import { TripOverviewHeader } from './TripOverviewHeader';
 
-function toDateTimeLocalValue(date: Date): string {
+function toTimeValue(date: Date): string {
   const pad = (value: number) => String(value).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-function toIsoDepartureTime(dateTimeLocal: string): string | undefined {
-  if (!dateTimeLocal) {
+function toIsoDepartureTime(time: string): string | undefined {
+  const match = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!match) {
     return undefined;
   }
 
-  const parsed = new Date(dateTimeLocal);
-  if (Number.isNaN(parsed.getTime())) {
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  const now = new Date();
+  const combined = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    hours,
+    minutes,
+  );
+
+  if (Number.isNaN(combined.getTime())) {
     return undefined;
   }
 
-  return parsed.toISOString();
+  return combined.toISOString();
 }
 
 export function TransportPage() {
@@ -36,9 +46,10 @@ export function TransportPage() {
   );
 
   const [departureTime, setDepartureTime] = useState(() =>
-    toDateTimeLocalValue(new Date()),
+    toTimeValue(new Date()),
   );
   const hasHydrated = useCommuteSettingsHydrated();
+  const showTripSummaryTile = useUiStore((state) => state.showTripSummaryTile);
 
   const departureTimeIso = toIsoDepartureTime(departureTime);
   const commuteSearch = useCommuteSearch(
@@ -65,32 +76,43 @@ export function TransportPage() {
 
   return (
     <PageContainer>
-      <section className="mb-6 space-y-4 rounded-lg border border-slate-200 bg-white p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <label className="block text-sm font-medium text-slate-700">
-            Departure time
+      <section className="mb-6 rounded-lg border border-slate-200 bg-white p-4">
+        <div className="flex items-center justify-between gap-3">
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+            <span className="sr-only">Departure time</span>
             <input
-              type="datetime-local"
+              type="time"
               value={departureTime}
               onChange={handleDepartureTimeChange}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm sm:max-w-xs"
+              aria-label="Departure time"
+              className="w-28 rounded-md border border-slate-300 px-2 py-1.5 text-sm"
             />
           </label>
 
           <button
             type="button"
             onClick={handleSwapDestinations}
-            className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+            aria-label="Switch destinations"
+            title="Switch destinations"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
           >
-            Switch destinations
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4"
+              aria-hidden="true"
+            >
+              <polyline points="17 1 21 5 17 9" />
+              <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+              <polyline points="7 23 3 19 7 15" />
+              <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+            </svg>
           </button>
         </div>
-
-        <p className="text-sm text-slate-600" data-testid="commute-route">
-          <span className="font-medium text-slate-800">{from}</span>
-          <span className="mx-2 text-slate-400">→</span>
-          <span className="font-medium text-slate-800">{to}</span>
-        </p>
       </section>
 
       {commuteSearch.isError && (
@@ -112,26 +134,23 @@ export function TransportPage() {
           {commuteSearch.isFetching && !commuteSearch.isLoading && (
             <p className="text-xs text-slate-500">Updating connections…</p>
           )}
-          <section className="space-y-4 rounded-2xl bg-slate-950 p-4 sm:p-6">
-            <TripOverviewHeader
-              from={from}
-              to={to}
-              departureLabel={formatDepartureLabel(result.departureTime)}
-            />
-            <TripOptionCard option={trip} interactive={false} />
-          </section>
+          {showTripSummaryTile && (
+            <section className="space-y-4 rounded-2xl bg-slate-950 p-4 sm:p-6">
+              <TripOptionCard option={trip} interactive={false} />
+            </section>
+          )}
 
           {result.segments.length > 0 && (
             <section className="space-y-4">
-              <h2 className="text-sm font-medium text-slate-700">
-                Connection options
-              </h2>
               {result.segments.map((segment) => (
                 <SegmentTripOptionsBoard
                   key={`${segment.from.id}-${segment.to.id}-${segment.legIndex}`}
                   segment={segment}
                 />
               ))}
+              <p className="text-base font-medium text-slate-900">
+                {result.segments[result.segments.length - 1].to.name}
+              </p>
             </section>
           )}
         </div>

@@ -3,10 +3,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useCommuteSettingsStore } from '../../../stores/useCommuteSettingsStore';
+import { STATION_OPTIONS } from '../../transport/constants';
 
 const commuteDestinationsSchema = z.object({
-  from: z.string().trim().min(1, 'From destination is required'),
-  to: z.string().trim().min(1, 'To destination is required'),
+  from: z.enum(STATION_OPTIONS),
+  to: z.enum(STATION_OPTIONS),
 });
 
 type CommuteDestinationsFormValues = z.infer<typeof commuteDestinationsSchema>;
@@ -23,16 +24,22 @@ export function CommuteDestinationsForm() {
     formState: { errors, isSubmitting, isDirty },
   } = useForm<CommuteDestinationsFormValues>({
     resolver: zodResolver(commuteDestinationsSchema),
-    defaultValues: { from, to },
+    defaultValues: {
+      from: from as CommuteDestinationsFormValues['from'],
+      to: to as CommuteDestinationsFormValues['to'],
+    },
   });
 
   useEffect(() => {
-    reset({ from, to });
+    reset({
+      from: from as CommuteDestinationsFormValues['from'],
+      to: to as CommuteDestinationsFormValues['to'],
+    });
   }, [from, to, reset]);
 
   const onSubmit = (values: CommuteDestinationsFormValues) => {
-    setDestinations(values.from.trim(), values.to.trim());
-    reset({ from: values.from.trim(), to: values.to.trim() });
+    setDestinations(values.from, values.to);
+    reset(values);
   };
 
   return (
@@ -55,13 +62,17 @@ export function CommuteDestinationsForm() {
         >
           From
         </label>
-        <input
+        <select
           id="commute-from"
-          type="text"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          placeholder="e.g. Rüttenscheider Stern, Essen"
+          className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
           {...register('from')}
-        />
+        >
+          {STATION_OPTIONS.map((station) => (
+            <option key={station} value={station}>
+              {station}
+            </option>
+          ))}
+        </select>
         {errors.from ? (
           <p className="mt-1 text-sm text-red-600" role="alert">
             {errors.from.message}
@@ -76,13 +87,17 @@ export function CommuteDestinationsForm() {
         >
           To
         </label>
-        <input
+        <select
           id="commute-to"
-          type="text"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          placeholder="e.g. Essen Hbf"
+          className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
           {...register('to')}
-        />
+        >
+          {STATION_OPTIONS.map((station) => (
+            <option key={station} value={station}>
+              {station}
+            </option>
+          ))}
+        </select>
         {errors.to ? (
           <p className="mt-1 text-sm text-red-600" role="alert">
             {errors.to.message}

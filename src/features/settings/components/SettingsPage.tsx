@@ -1,6 +1,7 @@
 import { PageContainer } from '../../../shared/components/PageContainer';
 import { PageHeader } from '../../../shared/components/PageHeader';
 import { CommuteDestinationsForm } from './CommuteDestinationsForm';
+import { DisplaySettingsForm } from './DisplaySettingsForm';
 import { UserSelector } from './UserSelector';
 
 export function SettingsPage() {
@@ -17,6 +18,10 @@ export function SettingsPage() {
 
         <section className="rounded-lg border border-slate-200 bg-white p-6">
           <CommuteDestinationsForm />
+        </section>
+
+        <section className="rounded-lg border border-slate-200 bg-white p-6">
+          <DisplaySettingsForm />
         </section>
       </div>
     </PageContainer>

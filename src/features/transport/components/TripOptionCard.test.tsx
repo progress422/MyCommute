@@ -13,7 +13,20 @@ describe('TripOptionCard', () => {
     vi.useRealTimers();
   });
 
-  it('shows time until departure at the top right and duration in small text', () => {
+  it('shows the essential info on the compact tile: line, departure time, platform, and time left', () => {
+    render(
+      <TripOptionCard
+        option={makeCommuteOption({ boardingPlatform: 'Gleis 2' })}
+        interactive={false}
+      />,
+    );
+
+    expect(screen.getByText('in 5 min')).toBeInTheDocument();
+    expect(screen.getByText('U11')).toBeInTheDocument();
+    expect(screen.getByText('Gleis 2')).toBeInTheDocument();
+  });
+
+  it('hides secondary info like duration and transfer count from the tile', () => {
     render(
       <TripOptionCard
         option={makeCommuteOption()}
@@ -21,14 +34,7 @@ describe('TripOptionCard', () => {
       />,
     );
 
-    const timeUntil = screen.getByText('in 5 min');
-    const duration = screen.getByText('32 min');
-
-    expect(timeUntil).toBeInTheDocument();
-    expect(duration).toBeInTheDocument();
-    expect(duration.className).toContain('text-xs');
-    expect(timeUntil.compareDocumentPosition(duration)).toBe(
-      Node.DOCUMENT_POSITION_FOLLOWING,
-    );
+    expect(screen.queryByText('32 min')).not.toBeInTheDocument();
+    expect(screen.queryByText(/transfer/)).not.toBeInTheDocument();
   });
 });

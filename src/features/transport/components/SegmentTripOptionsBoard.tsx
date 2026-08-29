@@ -10,12 +10,8 @@ export function SegmentTripOptionsBoard({ segment }: SegmentTripOptionsBoardProp
     <section className="rounded-xl border border-slate-200 bg-white p-4">
       <header className="mb-3 border-b border-slate-100 pb-3">
         <h3 className="text-base font-medium text-slate-900">
-          {segment.from.name} → {segment.to.name}
+          {segment.from.name}
         </h3>
-        <p className="mt-0.5 text-xs text-slate-500">
-          Up to {segment.options.length} connection
-          {segment.options.length === 1 ? '' : 's'}
-        </p>
       </header>
 
       {segment.options.length === 0 ? (
